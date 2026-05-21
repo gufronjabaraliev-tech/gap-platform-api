@@ -1,0 +1,24 @@
+---
+description: GAP Flutter ilovasida cho'chqa va hamyon Material ikonlari taqiqlangan
+globs: gap_app/**/*.dart
+alwaysApply: true
+---
+
+# Cho'chqa ikonlari — qat'iy taqiq
+
+Hech qachon quyidagilarni ishlatmang:
+
+- `Icons.savings`, `Icons.savings_outlined`, `Icons.savings_rounded` (va boshqa `savings*`)
+- `Icons.account_balance_wallet`, `Icons.account_balance_wallet_outlined`, `Icons.account_balance_wallet_rounded`
+
+Bular Material Design cho'chqa / hamyon ramzlari; foydalanuvchi ularni ilovada ko'rishni xohlamaydi.
+
+## O'rniga
+
+`lib/theme/gap_icons.dart` dagi [GapIcons] dan foydalaning:
+
+- Brend / jamg'armalar: `GapIcons.brand`, `GapIcons.brandOutlined`
+- Pul / to'lov: `GapIcons.payments`, `GapIcons.paymentsOutlined`
+- Guruhlar: `GapIcons.groups`
+
+Admin panelda `savings` / `wallet` icon nomlari API orqali kelsa ham, `iconNameToIconData` ularni xavfsiz ikonlarga map qiladi.

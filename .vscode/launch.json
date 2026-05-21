@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GAP · Chrome localhost:5103",
+      "cwd": "${workspaceFolder}/gap_app",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "chrome",
+      "toolArgs": ["--web-port=5103"]
+    }
+  ]
+}

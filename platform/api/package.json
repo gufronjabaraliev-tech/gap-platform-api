@@ -1,0 +1,20 @@
+{
+  "name": "gap-platform-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --watch --env-file=.env src/index.js",
+    "seed": "node --env-file=.env src/seed.js",
+    "setup": "node -e \"const{execSync}=require('child_process');try{execSync('createdb gap_db',{stdio:'inherit'})}catch(e){console.log('gap_db allaqachon mavjud yoki PostgreSQL o\\'rnatilmagan')}\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.0",
+    "uuid": "^11.0.5"
+  }
+}

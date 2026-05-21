@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="GAP - Haftalik pul yig'im va boshqaruv tizimi">
+    <title>💰 GAP - Haftalik Pul Yig'im</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --purple: #9b59b6;
+            --blue: #3498db;
+            --green: #2ecc71;
+            --orange: #e67e22;
+            --pink: #e91e63;
+            --teal: #1abc9c;
+            --indigo: #6610f2;
+            --yellow: #f39c12;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .loader {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-circle {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader p {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--white);
+            min-height: 100vh;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            opacity: 0;
+            animation: slideUp 0.5s 1s forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .screen {
+            display: none;
+            min-height: calc(100vh - 120px);
+            animation: fadeIn 0.3s;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 120px;
+            z-index: 50;
+        }
+
+        .screen-header h2 {
+            font-size: 1.3em;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            margin: 20px;
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .welcome-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .welcome-card h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .info-points {
+            text-align: left;
+        }
+
+        .info-point {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .info-point i {
+            color: var(--success);
+            font-size: 1.2em;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .menu-card {
+            background: white;
+            border: none;
+            padding: 25px 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .menu-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .menu-card:active {
+            transform: translateY(-2px);
+        }
+
+        .menu-card i {
+            font-size: 2em;
+            color: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .menu-card span {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95em;
+        }
+
+        .menu-card .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .card-purple i { background: var(--purple); }
+        .card-blue i { background: var(--blue); }
+        .card-green i { background: var(--green); }
+        .card-orange i { background: var(--orange); }
+        .card-pink i { background: var(--pink); }
+        .card-teal i { background: var(--teal); }
+        .card-indigo i { background: var(--indigo); }
+        .card-yellow i { background: var(--yellow); color: var(--dark); }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 0 20px 20px;
+        }
+
+        .quick-stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-stat-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .quick-stat-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--radius);
+            font-size: 1em;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-number {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .input-hint {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-lg {
+            padding: 18px 30px;
+            font-size: 1.1em;
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .current-amount-display {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .amount-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .amount-value {
+            font-size: 3em;
+            font-weight: 700;
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-amount-btn {
+            padding: 12px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quick-amount-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quick-amount-btn:active {
+            transform: scale(0.95);
+        }
+
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--radius);
+            display: none;
+            animation: slideDown 0.3s;
+            white-space: pre-line;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-box.show {
+            display: block;
+        }
+
+        .message-box.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid var(--success);
+        }
+
+        .message-box.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--danger);
+        }
+
+        .members-grid {
+            display: grid;
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .member-card {
+            background: white;
+            padding: 15px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .member-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateX(5px);
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .member-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn.delete {
+            background: #ffe5e5;
+            color: var(--danger);
+        }
+
+        .icon-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .search-box {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--light);
+        }
+
+        .search-box i {
+            color: #999;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--radius);
+            font-size: 1em;
+        }
+
+        .schedule-list {
+            padding: 20px;
+        }
+
+        .schedule-item {
+            background: white;
+            padding: 20px;
+            margin: 12px 0;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+        }
+
+        .schedule-item:hover {
+            transform: translateX(5px);
+        }
+
+        .schedule-item.current {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .schedule-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .schedule-item.current .schedule-number {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .schedule-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .schedule-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .schedule-info {
+            padding: 20px;
+            background: #e3f2fd;
+            margin: 0 20px 20px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1976d2;
+        }
+
+        .current-receiver {
+            margin: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .receiver-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .receiver-name {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .receiver-week {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .payment-amount-display {
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+            color: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .payment-progress {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .payment-list {
+            margin-top: 15px;
+        }
+
+        .payment-list-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+
+        .payment-list-item i {
+            font-size: 1.2em;
+        }
+
+        .payment-list-item.paid i {
+            color: var(--success);
+        }
+
+        .payment-list-item.unpaid i {
+            color: #ccc;
+        }
+
+        .status-container {
+            padding: 20px;
+        }
+
+        .status-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .status-week {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .status-receiver {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .status-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .status-stat {
+            text-align: center;
+        }
+
+        .status-stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .status-stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .payment-status-list {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .payment-status-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .action-buttons {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        .calculation-example {
+            background: #fff3cd;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-top: 20px;
+        }
+
+        .calculation-example h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .calculation-example p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .calculation-example ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .calculation-example li {
+            padding: 5px 0;
+            color: #666;
+        }
+
+        .recently-added {
+            margin-top: 20px;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .floating-btn:active {
+            transform: scale(1.05) rotate(90deg);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideUp 0.3s;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2em;
+            color: var(--dark);
+        }
+
+        .close-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-body p {
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            background: var(--light);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-footer .btn {
+            width: auto;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .settings-info i {
+            font-size: 1.5em;
+            color: var(--primary);
+            width: 40px;
+        }
+
+        .settings-info strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--dark);
+        }
+
+        .settings-info small {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            animation: toastSlideIn 0.3s;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .toast i {
+            font-size: 1.3em;
+        }
+
+        .toast.success i {
+            color: var(--success);
+        }
+
+        .toast.error i {
+            color: var(--danger);
+        }
+
+        .toast.info i {
+            color: var(--info);
+        }
+
+        .toast-message {
+            flex: 1;
+            white-space: pre-line;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.1em;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .toast {
+                min-width: 250px;
+            }
+            
+            .toast-container {
+                right: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <p>💰 GAP</p>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>GAP</h1>
+                    <p>Haftalik Pul Yig'im Tizimi</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <i class="fas fa-users"></i>
+                    <span id="headerMemberCount">0</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span id="headerAmount">100</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="mainMenu" class="screen active">
+            <div class="welcome-card">
+                <div class="welcome-icon">🎯</div>
+                <h2>Xush kelibsiz!</h2>
+                <div class="info-points">
+                    <div class="info-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Har hafta bitta kishi pul oladi</span>
+                    </div>
+                    <div class="info-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Qolganlar haftalik summa to'laydi</span>
+                    </div>
+                    <div class="info-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>10 kishi → 9 to'laydi → 1 kishi $900 oladi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <button onclick="showScreen('addMember')" class="menu-card card-purple">
+                    <i class="fas fa-user-plus"></i>
+                    <span>A'zo qo'shish</span>
+                </button>
+                
+                <button onclick="showScreen('memberList')" class="menu-card card-blue">
+                    <i class="fas fa-users"></i>
+                    <span>A'zolar</span>
+                    <div class="badge" id="memberBadge">0</div>
+                </button>
+                
+                <button onclick="showScreen('setAmount')" class="menu-card card-green">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Summa</span>
+                </button>
+                
+                <button onclick="createScheduleAction()" class="menu-card card-orange">
+                    <i class="fas fa-random"></i>
+                    <span>Navbat yaratish</span>
+                </button>
+                
+                <button onclick="showScreen('schedule')" class="menu-card card-pink">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Navbat</span>
+                </button>
+                
+                <button onclick="showScreen('payment')" class="menu-card card-teal">
+                    <i class="fas fa-credit-card"></i>
+                    <span>To'lov</span>
+                </button>
+                
+                <button onclick="showScreen('status')" class="menu-card card-indigo">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Holat</span>
+                </button>
+                
+                <button onclick="nextWeekAction()" class="menu-card card-yellow">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Keyingi hafta</span>
+                </button>
+            </div>
+
+            <div class="quick-stats">
+                <div class="quick-stat-item">
+                    <div class="quick-stat-label">Joriy hafta</div>
+                    <div class="quick-stat-value" id="quickWeek">-</div>
+                </div>
+                <div class="quick-stat-item">
+                    <div class="quick-stat-label">Pul oluvchi</div>
+                    <div class="quick-stat-value" id="quickReceiver">-</div>
+                </div>
+                <div class="quick-stat-item">
+                    <div class="quick-stat-label">To'landi</div>
+                    <div class="quick-stat-value" id="quickPaid">0/0</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="addMember" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-user-plus"></i> A'zo qo'shish</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Ism familiya</label>
+                    <input type="text" id="memberName" placeholder="Masalan: Ali Valiyev" class="input-field" autocomplete="off">
+                    <small class="input-hint">To'liq ism va familiya kiriting</small>
+                </div>
+
+                <button onclick="addMember()" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus-circle"></i> Qo'shish
+                </button>
+
+                <div id="addMemberMessage" class="message-box"></div>
+                <div class="recently-added" id="recentlyAdded"></div>
+            </div>
+        </div>
+
+        <div id="memberList" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-users"></i> A'zolar ro'yxati</h2>
+            </div>
+
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="memberSearch" placeholder="Qidirish..." oninput="filterMembers()">
+            </div>
+
+            <div id="memberListContent" class="members-grid"></div>
+
+            <div class="action-buttons">
+                <button onclick="showScreen('addMember')" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Yangi a'zo
+                </button>
+                <button onclick="confirmDeleteAll()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Hammasini o'chirish
+                </button>
+            </div>
+        </div>
+
+        <div id="setAmount" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-dollar-sign"></i> Haftalik summa</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="current-amount-display">
+                    <div class="amount-label">Joriy summa</div>
+                    <div class="amount-value">$<span id="currentAmountDisplay">100</span></div>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fas fa-money-bill-wave"></i> Yangi summa</label>
+                    <input type="number" id="newAmount" placeholder="0" class="input-field input-number" min="1" step="10">
+                    <small class="input-hint">Har bir a'zo har haftada to'laydigan summa</small>
+                </div>
+
+                <div class="quick-amounts">
+                    <button onclick="setQuickAmount(50)" class="quick-amount-btn">$50</button>
+                    <button onclick="setQuickAmount(100)" class="quick-amount-btn">$100</button>
+                    <button onclick="setQuickAmount(150)" class="quick-amount-btn">$150</button>
+                    <button onclick="setQuickAmount(200)" class="quick-amount-btn">$200</button>
+                </div>
+
+                <button onclick="setAmount()" class="btn btn-success btn-lg">
+                    <i class="fas fa-check-circle"></i> O'rnatish
+                </button>
+
+                <div id="amountMessage" class="message-box"></div>
+
+                <div class="calculation-example">
+                    <h3>Hisoblash misoli:</h3>
+                    <p>Agar 10 kishi bo'lsa va haftalik $<span class="calc-amount">100</span>:</p>
+                    <ul>
+                        <li>9 kishi to'laydi: 9 × $<span class="calc-amount">100</span> = <strong>$<span class="calc-total">900</span></strong></li>
+                        <li>1 kishi oladi: <strong>$<span class="calc-total">900</span></strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="schedule" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-list-ol"></i> Navbat tartibi</h2>
+            </div>
+
+            <div class="schedule-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Navbat tasodifiy tarzda yaratiladi</span>
+            </div>
+
+            <div id="scheduleContent" class="schedule-list"></div>
+
+            <div class="action-buttons">
+                <button onclick="createScheduleAction()" class="btn btn-primary">
+                    <i class="fas fa-random"></i> Yangi navbat
+                </button>
+            </div>
+        </div>
+
+        <div id="payment" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-credit-card"></i> To'lov qilish</h2>
+            </div>
+
+            <div class="current-receiver" id="currentReceiverCard"></div>
+
+            <div class="form-container">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Kim to'ladi?</label>
+                    <select id="payerSelect" class="input-field">
+                        <option value="">Tanlang...</option>
+                    </select>
+                </div>
+
+                <div class="payment-amount-display">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span id="paymentAmountDisplay">100</span>
+                </div>
+
+                <button onclick="makePayment()" class="btn btn-success btn-lg">
+                    <i class="fas fa-check-circle"></i> To'lov qilindi
+                </button>
+
+                <div id="paymentMessage" class="message-box"></div>
+                <div class="payment-progress" id="paymentProgress"></div>
+            </div>
+        </div>
+
+        <div id="status" class="screen">
+            <div class="screen-header">
+                <button onclick="showScreen('mainMenu')" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-chart-bar"></i> Haftalik holat</h2>
+            </div>
+
+            <div id="statusContent" class="status-container"></div>
+        </div>
+
+        <button class="floating-btn" onclick="showSettings()">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tasdiqlash</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-secondary">Bekor qilish</button>
+                <button id="modalConfirmBtn" class="btn btn-danger">Tasdiqlash</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Sozlamalar</h3>
+                <button onclick="closeSettings()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-database"></i>
+                        <div>
+                            <strong>Ma'lumotlarni eksport qilish</strong>
+                            <small>JSON formatda saqlash</small>
+                        </div>
+                    </div>
+                    <button onclick="exportData()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-download"></i> Yuklash
+                    </button>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-upload"></i>
+                        <div>
+                            <strong>Ma'lumotlarni import qilish</strong>
+                            <small>JSON fayldan yuklash</small>
+                        </div>
+                    </div>
+                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+                    <button onclick="document.getElementById('importFile').click()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-upload"></i> Tanlash
+                    </button>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-trash-alt"></i>
+                        <div>
+                            <strong>Hamma ma'lumotlarni o'chirish</strong>
+                            <small>Barcha a'zolar va navbat o'chadi</small>
+                        </div>
+                    </div>
+                    <button onclick="confirmResetAll()" class="btn btn-sm btn-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Reset
+                    </button>
+                </div>
+
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Versiya</strong>
+                            <small>GAP v1.0.0</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        let members = {};
+        let schedule = [];
+        let currentWeek = 0;
+        let weeklyAmount = 100;
+        let payments = {};
+
+        function loadData() {
+            try {
+                const savedMembers = localStorage.getItem('gap_members');
+                const savedSchedule = localStorage.getItem('gap_schedule');
+                const savedWeek = localStorage.getItem('gap_current_week');
+                const savedAmount = localStorage.getItem('gap_weekly_amount');
+                const savedPayments = localStorage.getItem('gap_payments');
+                
+                if (savedMembers) members = JSON.parse(savedMembers);
+                if (savedSchedule) schedule = JSON.parse(savedSchedule);
+                if (savedWeek) currentWeek = parseInt(savedWeek);
+                if (savedAmount) weeklyAmount = parseInt(savedAmount);
+                if (savedPayments) payments = JSON.parse(savedPayments);
+                
+                console.log('✅ Ma\'lumotlar yuklandi');
+            } catch (error) {
+                console.error('❌ Yuklashda xato:', error);
+                showToast('Ma\'lumotlarni yuklashda xato', 'error');
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('gap_members', JSON.stringify(members));
+                localStorage.setItem('gap_schedule', JSON.stringify(schedule));
+                localStorage.setItem('gap_current_week', currentWeek);
+                localStorage.setItem('gap_weekly_amount', weeklyAmount);
+                localStorage.setItem('gap_payments', JSON.stringify(payments));
+                console.log('💾 Ma\'lumotlar saqlandi');
+            } catch (error) {
+                console.error('❌ Saqlashda xato:', error);
+                showToast('Ma\'lumotlarni saqlashda xato', 'error');
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                
+                switch(screenId) {
+                    case 'mainMenu':
+                        updateMainMenu();
+                        break;
+                    case 'memberList':
+                        showMembers();
+                        break;
+                    case 'schedule':
+                        showSchedule();
+                        break;
+                    case 'status':
+                        showStatus();
+                        break;
+                    case 'payment':
+                        updatePaymentScreen();
+                        break;
+                    case 'setAmount':
+                        updateAmountScreen();
+                        break;
+                }
+                
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function updateMainMenu() {
+            document.getElementById('headerMemberCount').textContent = Object.keys(members).length;
+            document.getElementById('headerAmount').textContent = weeklyAmount;
+            document.getElementById('memberBadge').textContent = Object.keys(members).length;
+            
+            if (schedule.length > 0) {
+                document.getElementById('quickWeek').textContent = `#${currentWeek + 1}`;
+                const receiverId = schedule[currentWeek];
+                const receiverName = members[receiverId] || '-';
+                document.getElementById('quickReceiver').textContent = receiverName;
+                
+                const total = Object.keys(members).length;
+                const paid = Object.keys(payments[currentWeek] || {}).length;
+                document.getElementById('quickPaid').textContent = `${paid}/${total - 1}`;
+            } else {
+                document.getElementById('quickWeek').textContent = '-';
+                document.getElementById('quickReceiver').textContent = '-';
+                document.getElementById('quickPaid').textContent = '0/0';
+            }
+        }
+
+        function addMember() {
+            const nameInput = document.getElementById('memberName');
+            const name = nameInput.value.trim();
+            const messageBox = document.getElementById('addMemberMessage');
+            
+            if (!name) {
+                showMessage(messageBox, 'Iltimos, ism kiriting!', 'error');
+                nameInput.focus();
+                return;
+            }
+            
+            if (name.length < 2) {
+                showMessage(messageBox, 'Ism kamida 2 ta harfdan iborat bo\'lishi kerak!', 'error');
+                nameInput.focus();
+                return;
+            }
+            
+            const isDuplicate = Object.values(members).some(
+                existingName => existingName.toLowerCase() === name.toLowerCase()
+            );
+            
+            if (isDuplicate) {
+                showMessage(messageBox, `❌ ${name} allaqachon ro'yxatda!`, 'error');
+                nameInput.value = '';
+                nameInput.focus();
+                return;
+            }
+            
+            const memberId = 'member_' + Date.now();
+            members[memberId] = name;
+            saveData();
+            
+            const totalMembers = Object.keys(members).length;
+            showMessage(messageBox, `✅ ${name} muvaffaqiyatli qo'shildi!\n\nJami a'zolar: ${totalMembers}`, 'success');
+            showToast(`${name} qo'shildi`, 'success');
+            
+            nameInput.value = '';
+            nameInput.focus();
+            
+            updateRecentlyAdded(name);
+            updateMainMenu();
+        }
+
+        function updateRecentlyAdded(name) {
+            const container = document.getElementById('recentlyAdded');
+            if (!container) return;
+            
+            const html = `
+                <div class="recently-added-title">So'nggi qo'shilgan:</div>
+                <div class="member-card" style="animation: slideDown 0.3s;">
+                    <div class="member-info">
+                        <div class="member-avatar">${name.charAt(0).toUpperCase()}</div>
+                        <div class="member-name">${name}</div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function showMembers() {
+            const container = document.getElementById('memberListContent');
+            
+            if (Object.keys(members).length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>Hali a'zolar yo'q</p>
+                        <button onclick="showScreen('addMember')" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Birinchi a'zoni qo'shing
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            let index = 1;
+            
+            for (let id in members) {
+                const name = members[id];
+                const initial = name.charAt(0).toUpperCase();
+                
+                html += `
+                    <div class="member-card" data-member-id="${id}">
+                        <div class="member-info">
+                            <div class="member-avatar">${initial}</div>
+                            <div>
+                                <div class="member-name">${index}. ${name}</div>
+                            </div>
+                        </div>
+                        <div class="member-actions">
+                            <button onclick="deleteMember('${id}')" class="icon-btn delete" title="O'chirish">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                index++;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function filterMembers() {
+            const searchInput = document.getElementById('memberSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const memberCards = document.querySelectorAll('.member-card');
+            
+            memberCards.forEach(card => {
+                const name = card.querySelector('.member-name').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function deleteMember(memberId) {
+            const memberName = members[memberId];
+            
+            showConfirmModal(
+                'A\'zoni o\'chirish',
+                `${memberName} ni ro'yxatdan o'chirmoqchimisiz?\n\nBu amal bekor qilinmaydi!`,
+                () => {
+                    delete members[memberId];
+                    
+                    const scheduleIndex = schedule.indexOf(memberId);
+                    if (scheduleIndex > -1) {
+                        schedule.splice(scheduleIndex, 1);
+                        if (currentWeek >= schedule.length && schedule.length > 0) {
+                            currentWeek = 0;
+                        }
+                    }
+                    
+                    saveData();
+                    showMembers();
+                    updateMainMenu();
+                    showToast(`${memberName} o'chirildi`, 'success');
+                    closeModal();
+                }
+            );
+        }
+
+        function confirmDeleteAll() {
+            if (Object.keys(members).length === 0) {
+                showToast('O\'chiriladigan a\'zolar yo\'q', 'info');
+                return;
+            }
+            
+            showConfirmModal(
+                'Barcha a\'zolarni o\'chirish',
+                `Haqiqatan ham ${Object.keys(members).length} ta a'zoni o'chirmoqchimisiz?\n\nBu amal bekor qilinmaydi!`,
+                () => {
+                    members = {};
+                    schedule = [];
+                    currentWeek = 0;
+                    payments = {};
+                    saveData();
+                    showMembers();
+                    updateMainMenu();
+                    showToast('Barcha a\'zolar o\'chirildi', 'success');
+                    closeModal();
+                }
+            );
+        }
+
+        function updateAmountScreen() {
+            document.getElementById('currentAmountDisplay').textContent = weeklyAmount;
+            document.getElementById('newAmount').value = '';
+            updateCalculationExample();
+        }
+
+        function setQuickAmount(amount) {
+            document.getElementById('newAmount').value = amount;
+        }
+
+        function setAmount() {
+            const newAmountInput = document.getElementById('newAmount');
+            const messageBox = document.getElementById('amountMessage');
+            const amount = parseInt(newAmountInput.value);
+            
+            if (!amount || isNaN(amount)) {
+                showMessage(messageBox, 'Iltimos, to\'g\'ri summa kiriting!', 'error');
+                newAmountInput.focus();
+                return;
+            }
+            
+            if (amount < 1) {
+                showMessage(messageBox, 'Summa 1 dan katta bo\'lishi kerak!', 'error');
+                newAmountInput.focus();
+                return;
+            }
+            
+            if (amount > 10000) {
+                showMessage(messageBox, 'Summa 10,000 dan kichik bo\'lishi kerak!', 'error');
+                newAmountInput.focus();
+                return;
+            }
+            
+            weeklyAmount = amount;
+            saveData();
+            
+            document.getElementById('currentAmountDisplay').textContent = amount;
+            document.getElementById('headerAmount').textContent = amount;
+            updateCalculationExample();
+            
+            showMessage(messageBox, `✅ Haftalik summa $${amount} ga o'rnatildi!`, 'success');
+            showToast(`Summa $${amount} ga o'zgartirildi`, 'success');
+            
+            newAmountInput.value = '';
+        }
+
+        function updateCalculationExample() {
+            const totalMembers = Object.keys(members).length || 10;
+            const payers = totalMembers - 1;
+            const total = payers * weeklyAmount;
+            
+            document.querySelectorAll('.calc-amount').forEach(el => {
+                el.textContent = weeklyAmount;
+            });
+            
+            document.querySelectorAll('.calc-total').forEach(el => {
+                el.textContent = total;
+            });
+        }
+
+        function createScheduleAction() {
+            const memberCount = Object.keys(members).length;
+            
+            if (memberCount < 2) {
+                showToast('Kamida 2 ta a\'zo kerak!', 'error');
+                showScreen('addMember');
+                return;
+            }
+            
+            showConfirmModal(
+                'Navbat yaratish',
+                `${memberCount} ta a'zo uchun tasodifiy navbat yaratilsinmi?\n\nOldingi navbat o'chib ketadi!`,
+                () => {
+                    createSchedule();
+                    closeModal();
+                }
+            );
+        }
+
+        function createSchedule() {
+            const memberIds = Object.keys(members);
+            
+            for (let i = memberIds.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [memberIds[i], memberIds[j]] = [memberIds[j], memberIds[i]];
+            }
+            
+            schedule = memberIds;
+            currentWeek = 0;
+            
+            payments = {};
+            for (let i = 0; i < schedule.length; i++) {
+                payments[i] = {};
+            }
+            
+            saveData();
+            updateMainMenu();
+            
+            showToast('✅ Navbat yaratildi!', 'success');
+            showScreen('schedule');
+        }
+
+        function showSchedule() {
+            const container = document.getElementById('scheduleContent');
+            
+            if (schedule.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-list-ol"></i>
+                        <p>Navbat yaratilmagan</p>
+                        <button onclick="createScheduleAction()" class="btn btn-primary">
+                            <i class="fas fa-random"></i> Navbat yaratish
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            schedule.forEach((memberId, index) => {
+                const name = members[memberId];
+                const isCurrent = index === currentWeek;
+                const className = isCurrent ? 'schedule-item current' : 'schedule-item';
+                
+                html += `
+                    <div class="${className}">
+                        <div class="schedule-number">${index + 1}</div>
+                        <div class="schedule-name">${name}</div>
+                        ${isCurrent ? '<div class="schedule-badge">JORIY HAFTA</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updatePaymentScreen() {
+            const select = document.getElementById('payerSelect');
+            
+            if (schedule.length === 0) {
+                document.getElementById('currentReceiverCard').innerHTML = `
+                    <div class="empty-state" style="color: white;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Navbat yaratilmagan!</p>
+                    </div>
+                `;
+                select.innerHTML = '<option value="">Navbat yaratilmagan</option>';
+                return;
+            }
+            
+            const receiverId = schedule[currentWeek];
+            const receiverName = members[receiverId];
+            
+            document.getElementById('currentReceiverCard').innerHTML = `
+                <div class="receiver-label">Bu hafta pul oluvchi:</div>
+                <div class="receiver-name">${receiverName}</div>
+                <div class="receiver-week">Hafta #${currentWeek + 1}</div>
+            `;
+            
+            select.innerHTML = '<option value="">Tanlang...</option>';
+            
+            for (let id in members) {
+                if (id !== receiverId) {
+                    const hasPaid = payments[currentWeek] && payments[currentWeek][id];
+                    const name = members[id];
+                    const label = hasPaid ? `✅ ${name} (To'langan)` : name;
+                    select.innerHTML += `<option value="${id}" ${hasPaid ? 'disabled' : ''}>${label}</option>`;
+                }
+            }
+            
+            document.getElementById('paymentAmountDisplay').textContent = weeklyAmount;
+            updatePaymentProgress();
+        }
+
+        function makePayment() {
+            const select = document.getElementById('payerSelect');
+            const payerId = select.value;
+            const messageBox = document.getElementById('paymentMessage');
+            
+            if (!payerId) {
+                showMessage(messageBox, 'Iltimos, odamni tanlang!', 'error');
+                return;
+            }
+            
+            if (schedule.length === 0) {
+                showMessage(messageBox, 'Navbat yaratilmagan!', 'error');
+                return;
+            }
+            
+            if (payments[currentWeek] && payments[currentWeek][payerId]) {
+                showMessage(messageBox, `${members[payerId]} allaqachon to'lagan!`, 'error');
+                return;
+            }
+            
+            if (!payments[currentWeek]) {
+                payments[currentWeek] = {};
+            }
+            payments[currentWeek][payerId] = true;
+            saveData();
+            
+            const total = Object.keys(members).length;
+            const paid = Object.keys(payments[currentWeek]).length;
+            const collected = paid * weeklyAmount;
+            const expected = (total - 1) * weeklyAmount;
+            
+            const payerName = members[payerId];
+            showMessage(
+                messageBox,
+                `✅ ${payerName} - $${weeklyAmount} to'landi!\n\n💵 Jami: $${collected} / $${expected}\n✅ To'ladilar: ${paid} / ${total - 1}`,
+                'success'
+            );
+            showToast(`${payerName} to'ladi`, 'success');
+            
+            updatePaymentScreen();
+            updateMainMenu();
+            
+            if (paid === total - 1) {
+                setTimeout(() => {
+                    showToast('🎉 Hammasi to\'landi!', 'success');
+                }, 500);
+            }
+        }
+
+        function updatePaymentProgress() {
+            const container = document.getElementById('paymentProgress');
+            
+            if (schedule.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const total = Object.keys(members).length;
+            const paid = Object.keys(payments[currentWeek] || {}).length;
+            const percentage = Math.round((paid / (total - 1)) * 100);
+            const collected = paid * weeklyAmount;
+            const expected = (total - 1) * weeklyAmount;
+            
+            let html = `
+                <div class="progress-header">
+                    <span>To'lov jarayoni</span>
+                    <span>${paid} / ${total - 1}</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: ${percentage}%">
+                        ${percentage > 20 ? percentage + '%' : ''}
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-weight: 600; color: var(--dark);">
+                    $${collected} / $${expected}
+                </div>
+                <div class="payment-list">
+            `;
+            
+            const receiverId = schedule[currentWeek];
+            
+            for (let id in members) {
+                if (id === receiverId) continue;
+                
+                const name = members[id];
+                const hasPaid = payments[currentWeek] && payments[currentWeek][id];
+                const className = hasPaid ? 'payment-list-item paid' : 'payment-list-item unpaid';
+                const icon = hasPaid ? 'fa-check-circle' : 'fa-circle';
+                
+                html += `
+                    <div class="${className}">
+                        <i class="fas ${icon}"></i>
+                        <span>${name}</span>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function showStatus() {
+            const container = document.getElementById('statusContent');
+            
+            if (schedule.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <p>Navbat yaratilmagan!</p>
+                        <button onclick="createScheduleAction()" class="btn btn-primary">
+                            <i class="fas fa-random"></i> Navbat yaratish
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const receiverId = schedule[currentWeek];
+            const receiverName = members[receiverId];
+            const total = Object.keys(members).length;
+            const paid = Object.keys(payments[currentWeek] || {}).length;
+            const collected = paid * weeklyAmount;
+            const expected = (total - 1) * weeklyAmount;
+            const percentage = Math.round((paid / (total - 1)) * 100);
+            
+            let html = `
+                <div class="status-header">
+                    <div class="status-week">Hafta #${currentWeek + 1}</div>
+                    <div class="status-receiver">${receiverName}</div>
+                    <div class="status-stats">
+                        <div class="status-stat">
+                            <div class="status-stat-label">Yig'ildi</div>
+                            <div class="status-stat-value">$${collected}</div>
+                        </div>
+                        <div class="status-stat">
+                            <div class="status-stat-label">Jami</div>
+                            <div class="status-stat-value">$${expected}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-status-list">
+                    <div class="payment-status-title">
+                        To'lov holati (${paid}/${total - 1})
+                    </div>
+                    <div class="progress-bar-container" style="margin-bottom: 20px;">
+                        <div class="progress-bar-fill" style="width: ${percentage}%">
+                            ${percentage}%
+                        </div>
+                    </div>
+            `;
+            
+            for (let id in members) {
+                if (id === receiverId) continue;
+                
+                const name = members[id];
+                const hasPaid = payments[currentWeek] && payments[currentWeek][id];
+                const className = hasPaid ? 'payment-list-item paid' : 'payment-list-item unpaid';
+                const icon = hasPaid ? 'fa-check-circle' : 'fa-circle';
+                
+                html += `
+                    <div class="${className}">
+                        <i class="fas ${icon}"></i>
+                        <span>${name}</span>
+                        ${hasPaid ? `<span style="margin-left: auto; color: var(--success); font-weight: 600;">$${weeklyAmount}</span>` : ''}
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function nextWeekAction() {
+            if (schedule.length === 0) {
+                showToast('Navbat yaratilmagan!', 'error');
+                return;
+            }
+            
+            const total = Object.keys(members).length;
+            const paid = Object.keys(payments[currentWeek] || {}).length;
+            
+            if (paid < total - 1) {
+                showConfirmModal(
+                    'Keyingi haftaga o\'tish',
+                    `Hali ${total - 1 - paid} kishi to'lamagan!\n\nBaribir keyingi haftaga o'tasizmi?`,
+                    () => {
+                        nextWeek();
+                        closeModal();
+                    }
+                );
+            } else {
+                nextWeek();
+            }
+        }
+
+        function nextWeek() {
+            currentWeek++;
+            
+            let message = '';
+            
+            if (currentWeek >= schedule.length) {
+                currentWeek = 0;
+                message = '🎉 Tsikl tugadi! Yangi tsikl boshlandi.\n\n';
+            }
+            
+            if (!payments[currentWeek]) {
+                payments[currentWeek] = {};
+            }
+            
+            saveData();
+            updateMainMenu();
+            
+            const nextReceiver = members[schedule[currentWeek]];
+            message += `➡️ Keyingi haftaga o'tildi!\n\n💰 Navbat: ${nextReceiver}`;
+            
+            showToast(message, 'success');
+            showScreen('status');
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            newConfirmBtn.onclick = onConfirm;
+            
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        function showSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function exportData() {
+            const data = {
+                members: members,
+                schedule: schedule,
+                currentWeek: currentWeek,
+                weeklyAmount: weeklyAmount,
+                payments: payments,
+                exportDate: new Date().toISOString(),
+                version: '1.0.0'
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gap-backup-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Ma\'lumotlar eksport qilindi', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!data.members || !data.version) {
+                        throw new Error('Noto\'g\'ri fayl formati');
+                    }
+                    
+                    showConfirmModal(
+                        'Ma\'lumotlarni import qilish',
+                        'Joriy ma\'lumotlar o\'chiriladi va yangilari yuklanadi. Davom etasizmi?',
+                        () => {
+                            members = data.members || {};
+                            schedule = data.schedule || [];
+                            currentWeek = data.currentWeek || 0;
+                            weeklyAmount = data.weeklyAmount || 100;
+                            payments = data.payments || {};
+                            
+                            saveData();
+                            updateMainMenu();
+                            closeModal();
+                            closeSettings();
+                            showToast('Ma\'lumotlar import qilindi', 'success');
+                        }
+                    );
+                } catch (error) {
+                    showToast('Faylni o\'qishda xato: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+            
+            event.target.value = '';
+        }
+
+        function confirmResetAll() {
+            showConfirmModal(
+                'Barcha ma\'lumotlarni o\'chirish',
+                'Haqiqatan ham BARCHA ma\'lumotlarni o\'chirmoqchimisiz?\n\nBu amal bekor qilinmaydi!\n\nAvval eksport qilish tavsiya etiladi.',
+                () => {
+                    resetAll();
+                    closeModal();
+                    closeSettings();
+                }
+            );
+        }
+
+        function resetAll() {
+            members = {};
+            schedule = [];
+            currentWeek = 0;
+            weeklyAmount = 100;
+            payments = {};
+            
+            localStorage.clear();
+            
+            updateMainMenu();
+            showScreen('mainMenu');
+            showToast('Barcha ma\'lumotlar o\'chirildi', 'success');
+        }
+
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message-box ${type} show`;
+            
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 5000);
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <div class="toast-message">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideIn 0.3s reverse';
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeSettings();
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveData();
+                showToast('Ma\'lumotlar saqlandi', 'success');
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                exportData();
+            }
+        });
+
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSettings();
+            }
+        });
+
+        window.addEventListener('online', () => {
+            showToast('Internet qayta ulandi', 'success');
+        });
+
+        window.addEventListener('offline', () => {
+            showToast('Internet ulanishi yo\'q. Ilova offline ishlayapti.', 'info');
+        });
+
+        setInterval(() => {
+            saveData();
+            console.log('🔄 Auto-save...');
+        }, 30000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 GAP App ishga tushdi');
+            
+            loadData();
+            
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                showScreen('mainMenu');
+            }, 1500);
+            
+            if (Object.keys(members).length === 0 && !localStorage.getItem('gap_welcomed')) {
+                setTimeout(() => {
+                    showToast('GAP ga xush kelibsiz! 👋', 'success');
+                    localStorage.setItem('gap_welcomed', 'true');
+                }, 2000);
+            }
+            
+            updateCalculationExample();
+        });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            e.preventDefault();
+        }, false);
+
+        window.addEventListener('error', function(e) {
+            console.error('❌ Xato:', e.error);
+            showToast('Xato yuz berdi. Sahifani yangilang.', 'error');
+        });
+
+        window.gapDebug = {
+            getMembers: () => members,
+            getSchedule: () => schedule,
+            getPayments: () => payments,
+            getCurrentWeek: () => currentWeek,
+            getAmount: () => weeklyAmount,
+            reset: () => {
+                if (confirm('Debug: Reset all data?')) {
+                    resetAll();
+                }
+            },
+            addTestData: () => {
+                const testNames = ['Ali Valiyev', 'Vali Aliyev', 'Sobir Karimov', 'Odil Yusupov', 'Jamshid Raximov'];
+                testNames.forEach(name => {
+                    const id = 'member_' + Date.now() + Math.random();
+                    members[id] = name;
+                });
+                saveData();
+                showMembers();
+                updateMainMenu();
+                console.log('✅ Test ma\'lumotlar qo\'shildi');
+            }
+        };
+
+        console.log('💡 Debug rejimi: window.gapDebug');
+    </script>
+</body>
+</html>
+Ushbu ilova kabi har qanday ilova kerak bolsa, murojaat qilishingiz.
+murojaat uchun tel: 998937300206
